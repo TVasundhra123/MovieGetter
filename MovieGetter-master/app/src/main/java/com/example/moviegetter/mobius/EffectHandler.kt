@@ -44,7 +44,6 @@ object EffectHandler {
                     )
                 )
             }
-
             .build()
     }
 
@@ -61,7 +60,7 @@ object EffectHandler {
                        if (movieResponse.isSuccessful) {
                            withContext(Dispatchers.Main) {
                                it.onNext(ApiSuccessEvent(movieResponse.body()))
-                               Log.d("TAG", "API Called with searchTag ${effect.searchTag}")
+                               Log.d("VASUNDHRA", "Search event hu me API Called with searchTag ${effect.searchTag}")
                            }
                        }
                    }
@@ -69,6 +68,5 @@ object EffectHandler {
            }
        }
    }
-
 
 }

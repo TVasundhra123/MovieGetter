@@ -13,7 +13,3 @@ data class RenderErrorEffect(
     val throwable: Throwable?
 ): ViewEffects()
 
-data class RenderItemClickedEffect(
-    val detailResponse: MovieDetails
-): ViewEffects()
-

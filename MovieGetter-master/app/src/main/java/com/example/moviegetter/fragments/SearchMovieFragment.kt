@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TableLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,19 +18,27 @@ import com.example.moviegetter.network.RetrofitService
 import com.example.moviegetter.recyclerview.Movies
 import com.example.moviegetter.recyclerview.MoviesAdapter
 import com.example.moviegetter.recyclerview.MoviesItemClicked
+import com.example.moviegetter.viewpager.MoviePagerAdapter
 import com.spotify.mobius.android.MobiusLoopViewModel
+import com.google.android.material.tabs.TabLayoutMediator
 
- class SearchMovieFragment : Fragment(), ViewCallback{
+ class SearchMovieFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchMovieBinding
     private lateinit var viewModel: MobiusLoopViewModel<Model, Events, Effect, ViewEffects>
     private lateinit var apiService: RetrofitApi
     private lateinit var madapter: MoviesAdapter
     private lateinit var searchTag: String
+    private lateinit var mAdapter: MoviePagerAdapter
 
-    private val render by lazy {
-        ViewRenderer(this)
-    }
+
+    private val tabList = mutableListOf(
+        "Avengers",
+        //"Transformers",
+       // "Barbie",
+        "Sample",
+        "Luck"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +55,8 @@ import com.spotify.mobius.android.MobiusLoopViewModel
 
         Log.d("TAG", requireActivity().toString())
 
+        setPager()
+
         viewModel = (requireActivity() as MainActivity).mobiusViewModel()
 
         binding.searchIcon.setOnClickListener {
@@ -54,31 +65,17 @@ import com.spotify.mobius.android.MobiusLoopViewModel
             Log.d("TAG", "Search Icon Click Event Fired $searchTag")
         }
 
-        viewModel.viewEffects.setObserver(
-            this
-        ) {
-            render(it)
-        }
     }
 
-    private fun render(it: ViewEffects) {
-        render.updateView(it)
-    }
-
-    override fun showList(list: List<Movies>?) {
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            madapter = MoviesAdapter(mutableListOf(),(requireActivity() as MoviesItemClicked))
-            binding.recyclerView.adapter = madapter
-            madapter.setData(list)
-        }
-    }
-
-     override fun showErrorToast() {
-        Toast.makeText(requireContext(), "Network Error", Toast.LENGTH_LONG).show()
-    }
-
+     private fun setPager() {
+         mAdapter = MoviePagerAdapter(this)
+         binding.viewPager.adapter = mAdapter
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = tabList[position]
+        }.attach()
+     }
 }
+
 
 interface ViewModelProvider {
     fun mobiusViewModel() : MobiusLoopViewModel<Model, Events, Effect, ViewEffects>
